@@ -1,0 +1,396 @@
+<html>
+<head>
+<title>index.html</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bababa;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+index.html</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;!DOCTYPE </span><span class="s2">html</span><span class="s0">&gt;</span>
+<span class="s0">&lt;html </span><span class="s2">lang</span><span class="s3">=&quot;zh-CN&quot;</span><span class="s0">&gt;</span>
+<span class="s0">&lt;head&gt;</span>
+    <span class="s0">&lt;meta </span><span class="s2">charset</span><span class="s3">=&quot;UTF-8&quot;</span><span class="s0">&gt;</span>
+    <span class="s0">&lt;title&gt;</span><span class="s1">小何的找文物小游戏</span><span class="s0">&lt;/title&gt;</span>
+    <span class="s0">&lt;style&gt;</span>
+        <span class="s1">body {</span>
+            <span class="s1">font-family: &quot;Courier New&quot;, monospace;</span>
+            <span class="s1">background-color: #1e1f22;</span>
+            <span class="s1">color: #bcbec4;</span>
+            <span class="s1">max-width: 800px;</span>
+            <span class="s1">margin: 0 auto;</span>
+            <span class="s1">padding: 20px;</span>
+            <span class="s1">line-height: 1.6;</span>
+        <span class="s1">}</span>
+        <span class="s1">.ascii-art {</span>
+            <span class="s1">white-space: pre;</span>
+            <span class="s1">font-size: 12px;</span>
+            <span class="s1">margin: 10px 0;</span>
+        <span class="s1">}</span>
+        <span class="s1">.game-container {</span>
+            <span class="s1">margin-top: 20px;</span>
+        <span class="s1">}</span>
+        <span class="s1">.choices {</span>
+            <span class="s1">margin: 20px 0;</span>
+        <span class="s1">}</span>
+        <span class="s1">button {</span>
+            <span class="s1">background-color: #3a3b3d;</span>
+            <span class="s1">color: #bcbec4;</span>
+            <span class="s1">border: 1px solid #6a6a6a;</span>
+            <span class="s1">padding: 8px 16px;</span>
+            <span class="s1">margin: 5px;</span>
+            <span class="s1">cursor: pointer;</span>
+            <span class="s1">font-family: &quot;Courier New&quot;, monospace;</span>
+        <span class="s1">}</span>
+        <span class="s1">button:hover {</span>
+            <span class="s1">background-color: #4a4b4d;</span>
+        <span class="s1">}</span>
+        <span class="s1">input {</span>
+            <span class="s1">background-color: #3a3b3d;</span>
+            <span class="s1">color: #bcbec4;</span>
+            <span class="s1">border: 1px solid #6a6a6a;</span>
+            <span class="s1">padding: 8px;</span>
+            <span class="s1">margin: 5px 0;</span>
+            <span class="s1">font-family: &quot;Courier New&quot;, monospace;</span>
+        <span class="s1">}</span>
+        <span class="s1">.prompt {</span>
+            <span class="s1">color: #6aab73;</span>
+        <span class="s1">}</span>
+    <span class="s0">&lt;/style&gt;</span>
+<span class="s0">&lt;/head&gt;</span>
+<span class="s0">&lt;body&gt;</span>
+    <span class="s0">&lt;div </span><span class="s2">class</span><span class="s3">=&quot;game-container&quot; </span><span class="s2">id</span><span class="s3">=&quot;game-container&quot;</span><span class="s0">&gt;</span>
+        <span class="s4">&lt;!-- 游戏内容将通过JS动态生成 --&gt;</span>
+    <span class="s0">&lt;/div&gt;</span>
+
+    <span class="s0">&lt;script&gt;</span>
+        <span class="s1">// 游戏数据与状态</span>
+        <span class="s1">const gameState = {</span>
+            <span class="s1">currentScene: &quot;start&quot;,</span>
+            <span class="s1">password: &quot;&quot;,</span>
+            <span class="s1">passwordNumber: 0,</span>
+            <span class="s1">nrLetters: 0,</span>
+            <span class="s1">nrNumbers: 0</span>
+        <span class="s1">};</span>
+
+        <span class="s1">// 字母和数字库</span>
+        <span class="s1">const letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];</span>
+        <span class="s1">const numbers = ['0','1','2','3','4','5','6','7','8','9'];</span>
+
+        <span class="s1">// 游戏场景定义</span>
+        <span class="s1">const scenes = {</span>
+            <span class="s1">start: {</span>
+                <span class="s1">ascii: `</span>
+      <span class="s1">_.--._ _.--._</span>
+<span class="s1">,-=.-&quot;:;:;:;\\':;:;:;&quot;-._</span>
+<span class="s1">\\\\\\:;:;:;:;:\\:;:;:;:;:;:\\</span>
+ <span class="s1">\\\\\\:;:;:;:;:\\:;:;:;:;:;:\\</span>
+  <span class="s1">\\\\\\:;:;:;:;:\\:;:;:;:;:;:\\</span>
+   <span class="s1">\\\\\\:;:;:;:;:\\:;::;:;:;:\\</span>
+    <span class="s1">\\\\\\;:;::;:;:\\:;:;:;::;:\\</span>
+     <span class="s1">\\\\\\;;:;:_:--:\\:_:--:_;:\\</span>
+      <span class="s1">\\\\\\_.-&quot; : &quot;-._\\__-&quot;:-__\\</span>
+       <span class="s1">\\`_..--&quot;&quot;--.;.--&quot;&quot;--.._=&gt;`,</span>
+                <span class="s1">text: `欢迎来到小何的找文物小游戏。</span>
+<span class="s1">何sy目前在一座古城里。你的任务是帮助他做出正确的选择，找到城里的文物：一本古籍。</span>
+
+<span class="s1">时间回溯到几天前。临行之际，考古队里的老师傅郑重地交给何sy一个小型电子保险箱。</span>
+<span class="s1">“这里面是研究所里唯二的一台单人地质雷达，能判断古迹内部有没有塌方、陷阱或者...别的东西。保险密码你自己设，不要太长。”</span>
+<span class="s1">“还有，东西小心用，别磕着碰着，这玩意比你我都金贵。”</span>
+<span class="s1">小何点点头。他接过保险箱，端详一会儿后，准备先设定一个密码。`,</span>
+                <span class="s1">type: &quot;input&quot;,</span>
+                <span class="s1">prompt: &quot;你希望密码里包含几个字母? &quot;,</span>
+                <span class="s1">nextScene: &quot;getNumbers&quot;,</span>
+                <span class="s1">validate: (input) =&gt; {</span>
+                    <span class="s1">const num = parseInt(input);</span>
+                    <span class="s1">return !isNaN(num) &amp;&amp; num &gt; 0;</span>
+                <span class="s1">},</span>
+                <span class="s1">errorMsg: &quot;请输入大于0的整数&quot;,</span>
+                <span class="s1">onSubmit: (input) =&gt; {</span>
+                    <span class="s1">gameState.nrLetters = parseInt(input);</span>
+                <span class="s1">}</span>
+            <span class="s1">},</span>
+
+            <span class="s1">getNumbers: {</span>
+                <span class="s1">text: &quot;&quot;,</span>
+                <span class="s1">type: &quot;input&quot;,</span>
+                <span class="s1">prompt: &quot;此外，你希望密码里包含多少个数字? &quot;,</span>
+                <span class="s1">nextScene: &quot;showPassword&quot;,</span>
+                <span class="s1">validate: (input) =&gt; {</span>
+                    <span class="s1">const num = parseInt(input);</span>
+                    <span class="s1">return !isNaN(num) &amp;&amp; num &gt; 0;</span>
+                <span class="s1">},</span>
+                <span class="s1">errorMsg: &quot;请输入大于0的整数&quot;,</span>
+                <span class="s1">onSubmit: (input) =&gt; {</span>
+                    <span class="s1">gameState.nrNumbers = parseInt(input);</span>
+                    <span class="s1">// 生成密码</span>
+                    <span class="s1">const passwordList = [];</span>
+                    <span class="s1">for (let i = 0; i &lt; gameState.nrLetters; i++) {</span>
+                        <span class="s1">passwordList.push(letters[Math.floor(Math.random() * letters.length)]);</span>
+                    <span class="s1">}</span>
+                    <span class="s1">for (let i = 0; i &lt; gameState.nrNumbers; i++) {</span>
+                        <span class="s1">passwordList.push(numbers[Math.floor(Math.random() * numbers.length)]);</span>
+                    <span class="s1">}</span>
+                    <span class="s1">// 打乱顺序</span>
+                    <span class="s1">for (let i = passwordList.length - 1; i &gt; 0; i--) {</span>
+                        <span class="s1">const j = Math.floor(Math.random() * (i + 1));</span>
+                        <span class="s1">[passwordList[i], passwordList[j]] = [passwordList[j], passwordList[i]];</span>
+                    <span class="s1">}</span>
+                    <span class="s1">gameState.password = passwordList.join('');</span>
+                    <span class="s1">gameState.passwordNumber = gameState.password.length;</span>
+                <span class="s1">}</span>
+            <span class="s1">},</span>
+
+            <span class="s1">showPassword: {</span>
+                <span class="s1">text: () =&gt; `根据你的决定，小何给保险箱设定的密码是：${gameState.password}</span>
+
+<span class="s1">几天过去，古籍的搜寻工作接近尾声。保险箱一直被小何保护得好好的，虽然他是单独行动，但只要地质雷达安然无恙，他心里就很踏实。</span>
+<span class="s1">走着走着，他遇到了一个十字路口。今天是考古计划的最后一天，天色渐晚，黄昏已至。他担心要是走错路拖到晚上，寻找文物就难上加难了。</span>
+<span class="s1">你想要他往什么方向走呢？`,</span>
+                <span class="s1">type: &quot;choice&quot;,</span>
+                <span class="s1">choices: [</span>
+                    <span class="s1">{ text: &quot;左&quot;, nextScene: &quot;leftPath&quot; },</span>
+                    <span class="s1">{ text: &quot;右&quot;, nextScene: &quot;rightPath&quot; }</span>
+                <span class="s1">],</span>
+                <span class="s1">prompt: &quot;写下你的选择“左/右”：&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">rightPath: {</span>
+                <span class="s1">text: &quot;小何越走越偏，最终迷了路，没找到文物所在地...寻找古籍之旅以失败告终。游戏结束&quot;,</span>
+                <span class="s1">type: &quot;end&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">leftPath: {</span>
+                <span class="s1">ascii: `</span>
+      <span class="s1">______</span>
+   <span class="s1">,-' ;  ! \`-.</span>
+  <span class="s1">/ :  !  :  . \\</span>
+ <span class="s1">|_ ;   __:  ;  |</span>
+ <span class="s1">)| .  :)(.  !  |</span>
+ <span class="s1">|&quot;    (##)  _  |</span>
+ <span class="s1">|  :  ;\`'  (_) (</span>
+ <span class="s1">|  :  :  .     |</span>
+ <span class="s1">)_ !  ,  ;  ;  |</span>
+ <span class="s1">|| .  .  :  :  |</span>
+ <span class="s1">|&quot; .  |  :  .  |</span>
+ <span class="s1">|----_;----.___|</span>
+<span class="s1">`,</span>
+                <span class="s1">text: `往左走是对的。以前搜集的各种证据都显示这个方向就是通往文物的康庄大道。</span>
+<span class="s1">根据老师傅提供过的线索，小何很快找到了文物所在地——一座寺庙，但是庙宇前紧锁的大门挡住了去路。</span>
+
+<span class="s1">寺庙规模不算大，对于搭载了多模态传感系统的地质雷达来说，庙内的一切潜在危险都无所遁形。</span>
+<span class="s1">小何决定在进庙前先用雷达探测一下，既是出于考古工作者预防危险的专业素养，也是想体验一把高科技降维打击的舒爽。</span>
+<span class="s1">“等这么多天，也是时候了！”他小心翼翼地把保险箱放在地上，欢欣鼓舞地蹲下身准备打开电子锁，却发现自己的记忆似乎一片空白。</span>
+<span class="s1">“呃，该不会...”小何懊恼地抬头望天，疯狂回想电子锁的密码。`,</span>
+                <span class="s1">type: &quot;input&quot;,</span>
+                <span class="s1">prompt: &quot;不往前翻，你还记得密码是什么吗？&quot;,</span>
+                <span class="s1">nextScene: (input) =&gt; input === gameState.password ? &quot;passwordCorrect&quot; : &quot;passwordWrong&quot;,</span>
+                <span class="s1">validate: () =&gt; true,</span>
+                <span class="s1">onSubmit: () =&gt; {}</span>
+            <span class="s1">},</span>
+
+            <span class="s1">passwordCorrect: {</span>
+                <span class="s1">text: `</span>
+<span class="s1">密码并不难回想，小何很快就打开了保险箱。</span>
+<span class="s1">然而，正当他俯身布置地质雷达的时候，身后几个人影悄然接近。随着一记当头闷棍，小何只觉得后脑一阵剧痛，随即晕了过去。</span>
+<span class="s1">几天后，当小何在医院醒来后，他得知是一支外国考古队尾随并袭击了自己，目的是为了劫掠珍贵的地质雷达，并抢先一步找到古籍。</span>
+<span class="s1">文物失窃了，高科技设备也没了。医生说小何可能有点轻度脑震荡。这真是糟糕的结局...游戏结束`,</span>
+                <span class="s1">type: &quot;end&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">passwordWrong: {</span>
+                <span class="s1">text: () =&gt; `</span>
+<span class="s1">当初设置密码时似乎没记住呢...</span>
+<span class="s1">小何凭着模糊的记忆尝试了好几次，却都不是正确的密码。</span>
+<span class="s1">他正望着打不开的保险箱出神，身后却传来悉悉索索的动静。他警觉地回头，发现四个不知从哪冒出来的外国人正鬼鬼祟祟地朝自己靠近。</span>
+<span class="s1">意识到被发现，几名外国人猛地冲过来，七手八脚地把小何按倒在地，用随身带的登山绳捆住了他。</span>
+<span class="s1">“你们谁啊，这是干什么？Who are u?”</span>
+<span class="s1">“我们考古队在后面等了很久，你都没有打开保险箱。你在干什么？！”为首的外国人用中文怒吼，“你现在哪也别想去，告诉我们电子锁的密码！”</span>
+<span class="s1">小何暗自庆幸，“好在刚才我忘了密码没打开锁，不然鬼知道这群人会做什么。”他无奈地告诉这支外国考古队，自己当初设定密码时没记住，已经忘得一干二净了。</span>
+<span class="s1">几个外国人闻言先是一怔，紧接着脸上浮现出怀疑的神情。眼看着天色渐晚，四个外国人凑在一起叽里咕噜商量了一阵，然后直接去手动尝试密码锁，把小何晾在了一边。</span>
+<span class="s1">何sy此时有些担心。如果当时设定的密码位数并不多，这群人还真有可能硬试出密码。那自己、雷达，以及身后庙里的文物可能都会遭殃。他极力想要摆脱束缚去阻止外国考古队的行径，但是登山绳绑得相当结实，一时半会儿挣脱不开。</span>
+
+<span class="s1">关键是，当初设定的到底是几位的密码呢？实际上是${gameState.passwordNumber}位。`,</span>
+                <span class="s1">type: &quot;branch&quot;,</span>
+                <span class="s1">condition: () =&gt; gameState.passwordNumber &lt;= 3,</span>
+                <span class="s1">trueScene: &quot;shortPassword&quot;,</span>
+                <span class="s1">falseScene: &quot;longPassword&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">shortPassword: {</span>
+                <span class="s1">text: `小何的担心不无道理——密码位数不多，过了不到一个小时，还真被外国人试出来了。看到保险箱打开，他们一阵狂呼乱叫，为首的外国人站起身，抽出一杆甩棍，露出猖狂的狞笑向小何走来...</span>
+<span class="s1">几天后，当小何在医院醒来，他得知古籍已经被那伙外国考古队抢先一步劫走了，大概率已经流失海外。</span>
+<span class="s1">文物失窃了，高科技设备也没了。医生说小何可能有点轻度脑震荡。这真是糟糕的结局...游戏结束`,</span>
+                <span class="s1">type: &quot;end&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">longPassword: {</span>
+                <span class="s1">ascii: `</span>
+                      <span class="s1">__</span>
+                   <span class="s1">_/ =\\</span>
+                 <span class="s1">,'  .__)</span>
+                <span class="s1">/ | |/</span>
+                <span class="s1">| | |\\</span>
+                <span class="s1">( | |.)</span>
+                <span class="s1">/ /_/&lt;</span>
+              <span class="s1">_/  /\\  \\</span>
+           <span class="s1">,-'__,'  \\ |</span>
+           <span class="s1">) /      | |_</span>
+           <span class="s1">&quot;&quot;       \\___)</span>
+            <span class="s1">`,</span>
+                <span class="s1">text: `由于密码位数不少，那帮外国人试了整整两个小时都没能成功。已经到晚上了，他们逐渐变得狂躁，直到暴跳如雷。为首的外国人再也按耐不住，他抽出一杆甩棍向小何走来，准备冲他狠狠发泄一波怒火。</span>
+<span class="s1">可突然间，他的动作停住了。小何很清楚是为什么——在他长达两个小时的奋力挣扎中，手机从裤口袋里滑落在地，小何费力地扭动双手，用指尖勉强碰到屏幕，终于向考古队队友发出了求救信号。</span>
+<span class="s1">此刻，任谁都能听到由远及近的车辆轰鸣声。是考古队的车队！小何昂起头怒目直视四个外国人，他们看着数道刺破黑暗的车灯光，再无半点嚣张气焰，灰溜溜地逃窜了。</span>
+<span class="s1">队友们在附近停下车，大家赶来簇拥着小何，关切地询问情况。了解到前因后果，老师傅当机立断报了警。</span>
+<span class="s1">在得知旁边的古庙就是文物古籍的所在地，大家都来了精神。考古队合力布置起照明设备，给接下来的考古工作足够的光照强度。老师傅拿出珍藏的另一台地质雷达布置在庙门前进行探测，确认里面没有明显的危险。</span>
+<span class="s1">“不过据我所知，古籍所在之处可是另有玄机...何sy，你和我一起找找进庙的办法，咱俩一块进去。”一听到老师傅发话，小何也不推辞，马上起身开始工作。</span>
+<span class="s1">小何绕到寺庙后院，发现一扇后门，门上的锁饱经风雨，已经生锈得很厉害了。用力一推，门就打开了。</span>
+<span class="s1">二人进入到庙里，小何环顾四周发现三个铜人，它们的脸上的五官各自缺了嘴巴，耳朵和眼睛。</span>
+<span class="s1">老师傅徐徐说道：“这一定就是传说中的‘勿言’、‘勿听’和‘勿视’三铜人了。</span>
+<span class="s1">根据可靠消息，要找的古籍就在铜人的体内。你看，三个铜人的手上都各有一个的按钮，按下就能启动非常古老的机关，打开铜人的身体。”</span>
+<span class="s1">“然而，只有一个铜人体内的是古籍，其它两个的体内很可能是致命的陷阱！”`,</span>
+                <span class="s1">type: &quot;choice&quot;,</span>
+                <span class="s1">choices: [</span>
+                    <span class="s1">{ text: &quot;勿言&quot;, nextScene: &quot;success&quot; },</span>
+                    <span class="s1">{ text: &quot;勿听&quot;, nextScene: &quot;fail1&quot; },</span>
+                    <span class="s1">{ text: &quot;勿视&quot;, nextScene: &quot;fail2&quot; }</span>
+                <span class="s1">],</span>
+                <span class="s1">prompt: &quot;帮助小何做出选择：勿言/勿听/勿视——&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">success: {</span>
+                <span class="s1">text: `</span>
+<span class="s1">满怀着紧张，小何按动按钮，屏息注视着缓缓打开的铜人。</span>
+<span class="s1">预想中的可怕陷阱并没有出现，只见一卷年代久远的古籍出现在铜人体内。</span>
+<span class="s1">跨越千年，古籍重现人间！`,</span>
+                <span class="s1">type: &quot;end&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">fail1: {</span>
+                <span class="s1">text: `</span>
+<span class="s1">小何小心翼翼地按动按钮。</span>
+<span class="s1">起初的几秒，什么也没发生。</span>
+<span class="s1">然而不过片刻，仿佛一万口钟磬轰响的爆鸣从古寺的地面下方传来。</span>
+<span class="s1">这声音猛烈地震撼了整个庙宇，千年古寺的房屋架构支撑不住，轰然倒塌。</span>
+<span class="s1">小何和老师傅二人很幸运没有因为寺庙的坍塌而受伤，可文物就没那么幸运了...游戏结束`,</span>
+                <span class="s1">type: &quot;end&quot;</span>
+            <span class="s1">},</span>
+
+            <span class="s1">fail2: {</span>
+                <span class="s1">text: `</span>
+<span class="s1">小何思考良久，按动按钮。</span>
+<span class="s1">铜人缓缓开启，却不见古籍。小何正疑惑，</span>
+<span class="s1">突然一阵耀眼的光芒出现在铜人体内，刺得他睁不开眼睛。</span>
+<span class="s1">片刻后，一股热浪自身前袭来，小何和老师傅虽然看不清发生了什么，却还是凭借本能一个闪身向后退去。</span>
+<span class="s1">原来是铜人体内的机关陷阱被触发了！只见无数道恐怖的火舌向四周无情的喷涌，三个铜人全部在肆虐的火势中化作铜水，连带着古籍一起消失殆尽。</span>
+<span class="s1">庙里的二人幸运地毫发无伤，但是古籍永远失去了重见天日的机会。游戏结束`,</span>
+                <span class="s1">type: &quot;end&quot;</span>
+            <span class="s1">}</span>
+        <span class="s1">};</span>
+
+        <span class="s1">// 渲染当前场景</span>
+        <span class="s1">function renderScene() {</span>
+            <span class="s1">const container = document.getElementById(&quot;game-container&quot;);</span>
+            <span class="s1">const scene = scenes[gameState.currentScene];</span>
+            <span class="s1">let html = &quot;&quot;;</span>
+
+            <span class="s1">// 渲染ASCII艺术</span>
+            <span class="s1">if (scene.ascii) {</span>
+                <span class="s1">html += `&lt;div class=&quot;ascii-art&quot;&gt;${scene.ascii}&lt;/div&gt;`;</span>
+            <span class="s1">}</span>
+
+            <span class="s1">// 渲染文本内容</span>
+            <span class="s1">html += `&lt;div class=&quot;text&quot;&gt;${typeof scene.text === &quot;function&quot; ? scene.text() : scene.text}&lt;/div&gt;`;</span>
+
+            <span class="s1">// 根据场景类型渲染交互元素</span>
+            <span class="s1">if (scene.type === &quot;input&quot;) {</span>
+                <span class="s1">html += `</span>
+                    <span class="s1">&lt;div class=&quot;input-container&quot;&gt;</span>
+                        <span class="s1">&lt;span class=&quot;prompt&quot;&gt;${scene.prompt}&lt;/span&gt;</span>
+                        <span class="s1">&lt;input type=&quot;text&quot; id=&quot;user-input&quot; onkeypress=&quot;if(event.key==='Enter') handleInputSubmit()&quot;&gt;</span>
+                        <span class="s1">&lt;button onclick=&quot;handleInputSubmit()&quot;&gt;确认&lt;/button&gt;</span>
+                        <span class="s1">&lt;div id=&quot;error-msg&quot; style=&quot;color: #cf8e6d; margin-top: 10px;&quot;&gt;&lt;/div&gt;</span>
+                    <span class="s1">&lt;/div&gt;</span>
+                <span class="s1">`;</span>
+            <span class="s1">} else if (scene.type === &quot;choice&quot;) {</span>
+                <span class="s1">html += `&lt;div class=&quot;choices&quot;&gt;`;</span>
+                <span class="s1">html += `&lt;span class=&quot;prompt&quot;&gt;${scene.prompt}&lt;/span&gt;`;</span>
+                <span class="s1">scene.choices.forEach(choice =&gt; {</span>
+                    <span class="s1">html += `&lt;button onclick=&quot;handleChoice('${choice.nextScene}')&quot;&gt;${choice.text}&lt;/button&gt;`;</span>
+                <span class="s1">});</span>
+                <span class="s1">html += `&lt;/div&gt;`;</span>
+            <span class="s1">} else if (scene.type === &quot;branch&quot;) {</span>
+                <span class="s1">// 分支场景自动跳转</span>
+                <span class="s1">const nextScene = scene.condition() ? scene.trueScene : scene.falseScene;</span>
+                <span class="s1">gameState.currentScene = nextScene;</span>
+                <span class="s1">renderScene();</span>
+                <span class="s1">return;</span>
+            <span class="s1">} else if (scene.type === &quot;end&quot;) {</span>
+                <span class="s1">// 结束场景添加重新开始按钮</span>
+                <span class="s1">html += `</span>
+                    <span class="s1">&lt;div class=&quot;choices&quot;&gt;</span>
+                        <span class="s1">&lt;button onclick=&quot;restartGame()&quot;&gt;重新开始游戏&lt;/button&gt;</span>
+                    <span class="s1">&lt;/div&gt;</span>
+                <span class="s1">`;</span>
+            <span class="s1">}</span>
+
+            <span class="s1">container.innerHTML = html;</span>
+        <span class="s1">}</span>
+
+        <span class="s1">// 处理输入提交</span>
+        <span class="s1">function handleInputSubmit() {</span>
+            <span class="s1">const inputElement = document.getElementById(&quot;user-input&quot;);</span>
+            <span class="s1">const inputValue = inputElement.value.trim();</span>
+            <span class="s1">const scene = scenes[gameState.currentScene];</span>
+            <span class="s1">const errorMsgElement = document.getElementById(&quot;error-msg&quot;);</span>
+
+            <span class="s1">if (scene.validate(inputValue)) {</span>
+                <span class="s1">errorMsgElement.textContent = &quot;&quot;;</span>
+                <span class="s1">scene.onSubmit(inputValue);</span>
+
+                <span class="s1">// 获取下一个场景</span>
+                <span class="s1">const nextScene = typeof scene.nextScene === &quot;function&quot;</span>
+                    <span class="s1">? scene.nextScene(inputValue)</span>
+                    <span class="s1">: scene.nextScene;</span>
+
+                <span class="s1">gameState.currentScene = nextScene;</span>
+                <span class="s1">renderScene();</span>
+            <span class="s1">} else {</span>
+                <span class="s1">errorMsgElement.textContent = scene.errorMsg;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+
+        <span class="s1">// 处理选择</span>
+        <span class="s1">function handleChoice(nextScene) {</span>
+            <span class="s1">gameState.currentScene = nextScene;</span>
+            <span class="s1">renderScene();</span>
+        <span class="s1">}</span>
+
+        <span class="s1">// 重新开始游戏</span>
+        <span class="s1">function restartGame() {</span>
+            <span class="s1">// 重置游戏状态</span>
+            <span class="s1">gameState.currentScene = &quot;start&quot;;</span>
+            <span class="s1">gameState.password = &quot;&quot;;</span>
+            <span class="s1">gameState.passwordNumber = 0;</span>
+            <span class="s1">gameState.nrLetters = 0;</span>
+            <span class="s1">gameState.nrNumbers = 0;</span>
+
+            <span class="s1">renderScene();</span>
+        <span class="s1">}</span>
+
+        <span class="s1">// 初始化游戏</span>
+        <span class="s1">renderScene();</span>
+    <span class="s0">&lt;/script&gt;</span>
+<span class="s0">&lt;/body&gt;</span>
+<span class="s0">&lt;/html&gt;</span></pre>
+</body>
+</html>
